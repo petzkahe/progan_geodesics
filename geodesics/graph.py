@@ -6,7 +6,7 @@ from geodesics.configs import *
 import geodesics.tfutil as tfutil
 import geodesics.utils as utils
 
-CUDA_DIVISIBLE_DEVICES = 1
+CUDA_DIVISIBLE_DEVICES = 0
 
 def import_linear_graph(G,D):
     latents = G.input_templates[0]
@@ -17,8 +17,9 @@ def import_linear_graph(G,D):
 
     critic_values,_ = utils.fp32(D.get_output_for(samples, is_training=False))
 
-    squared_differences = tf.multiply( tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] )), utils.fp32( 1.0 / (1024 * 1024 * 3) ) )
-
+    #squared_differences = tf.multiply( tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] )), utils.fp32( 1.0 / (1024 * 1024 * 3) ) )
+    squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
+    
 
 
 
@@ -35,9 +36,10 @@ def import_Jacobian_graph(G,D, latents_tensor):
 
     critic_values,_ = utils.fp32(D.get_output_for(samples, is_training=False))
 
-    squared_differences = tf.multiply( tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] )), utils.fp32( 1.0 / (1024 * 1024 * 3) ) )
-
-    objective_Jacobian = squared_differences
+    #squared_differences = tf.multiply( tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] )), utils.fp32( 1.0 / (1024 * 1024 * 3) ) )
+    squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
+    
+    objective_Jacobian = tf.reduce_sum(squared_differences)
 
 
     return samples, squared_differences, objective_Jacobian, latents, labels
@@ -54,7 +56,7 @@ def import_proposed_graph(G,D, latents_tensor):
     critic_values, _ = utils.fp32( D.get_output_for( samples, is_training=False ) )
 
     squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
-
+    
 
     small_eps = 0.01
 
@@ -91,6 +93,7 @@ def parameterize_line( latent_start, latent_end ):
 
     theta = np.linspace( 0.0, 1.0, num=no_pts_on_geodesic )
     latents = np.asarray([(latent_start * (1 - theta[i]) + latent_end * theta[i]) for i in range( np.shape( theta )[0] )],dtype=np.float32 )
+    #latents = latents * tf.rsqrt(tf.reduce_sum(tf.square(latents), axis=1, keepdims=True) + 1e-8)
     return latents
 
 
@@ -146,7 +149,8 @@ def parameterize_curve( latent_start, latent_end ):
                                         dtype='float32' )
 
     latents = tf.matmul(interpolation_matrix,coefficients)
-
+    #latents = utils.pixel_norm(latents)
+    #latents = latents * tf.rsqrt(tf.reduce_sum(tf.square(latents), axis=1, keepdims=True) + 1e-8)
     return latents, coefficients_free
 
 

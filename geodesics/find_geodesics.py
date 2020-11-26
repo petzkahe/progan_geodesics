@@ -48,7 +48,7 @@ def learn_geodesic(method, latent_start, latent_end, sess, G, D):
 
 
             latents = graph.parameterize_line(latent_start, latent_end) # is of size (no_pts, dimension)
-
+            
 
             lbls = np.zeros( [latents.shape[0]] + G.input_shapes[1][1:] )
 
@@ -164,11 +164,11 @@ def prepare_GAN_nets(sess):
 
 
     # Take out the variables that correspond to the minibatch standard deviation and set them to zero
-    D44ConvLayer = [v for v in tf.global_variables() if v.name == "D/4x4/Conv/weight:0"][0]
-    D44ConvLayer_killMiniBatchStd = D44ConvLayer[:, :, 512, :].assign( tf.zeros( (3, 3, 512) ) )
+    #D44ConvLayer = [v for v in tf.global_variables() if v.name == "D/4x4/Conv/weight:0"][0]
+    #D44ConvLayer_killMiniBatchStd = D44ConvLayer[:, :, 512, :].assign( tf.zeros( (3, 3, 512) ) )
 
-    D44ConvLayer_woMiniBatchStd = sess.run( D44ConvLayer_killMiniBatchStd)
-    tfutil.set_vars( {D44ConvLayer: D44ConvLayer_woMiniBatchStd} )
+    #D44ConvLayer_woMiniBatchStd = sess.run( D44ConvLayer_killMiniBatchStd)
+    #tfutil.set_vars( {D44ConvLayer: D44ConvLayer_woMiniBatchStd} )
 
     return G,D
 

@@ -29,3 +29,7 @@ def safe_log(x):
     return tf.log( x + 1e-8 )
 
 
+# def pixel_norm(x, epsilon=1e-8):
+# #    with tf.variable_scope('PixelNorm'):
+#     #print(tf.shape(x))
+#     return x * tf.rsqrt(tf.reduce_sum(tf.square(x), axis=1, keepdims=True) + epsilon)
