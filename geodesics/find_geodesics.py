@@ -48,7 +48,8 @@ def learn_geodesic(method, latent_start, latent_end, sess, G, D):
 
 
             latents = graph.parameterize_line(latent_start, latent_end) # is of size (no_pts, dimension)
-            
+            print("Linear latents norms:")
+            print(np.linalg.norm(latents,axis=1))
 
             lbls = np.zeros( [latents.shape[0]] + G.input_shapes[1][1:] )
 
@@ -98,8 +99,12 @@ def learn_geodesic(method, latent_start, latent_end, sess, G, D):
             lbls = np.zeros( [latents.shape[0]] + G.input_shapes[1][1:] )
 
             # Why not use sess?
-            [imgs, cost] = tf.get_default_session().run( [images, squared_differences],
+            #[imgs, cost] = tf.get_default_session().run( [images, squared_differences],
+            #                                             feed_dict={latent_plchldr: latents, labels_plchldr: lbls} )
+            [imgs, cost] = sess.run( [images, squared_differences],
                                                          feed_dict={latent_plchldr: latents, labels_plchldr: lbls} )
+
+
 
 
 
@@ -140,6 +145,8 @@ def learn_geodesic(method, latent_start, latent_end, sess, G, D):
 
 
             latents = sess.run(latents_tensor)
+            print("Proposed latents norms:")
+            print(np.linalg.norm(latents,axis=1))
 
 
             lbls = np.zeros( [latents.shape[0]] + G.input_shapes[1][1:] )
@@ -151,6 +158,8 @@ def learn_geodesic(method, latent_start, latent_end, sess, G, D):
 
         else:
              raise Exception("Method" + method +" does not exist")
+
+        np.save('models/saved_latents_' + method,latents) 
 
         return imgs, cost
 

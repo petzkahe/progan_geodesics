@@ -4,7 +4,7 @@ from geodesics.plotting import plot_geodesic
 from geodesics.configs import *
 
 
-
+#CUDA_VISIBLE_DEVICES=0
 
 
 latent_start, latent_end = utils.initialize_endpoints_of_curve( start_end_init)
@@ -21,6 +21,6 @@ for method in methods:
     geodesic_imgs, cost = geodesics_dict[method]
     print(cost)
 
-
     plot_geodesic(geodesic_imgs, method)
 
+plot_geodesic_comparison(geodesics_dict)

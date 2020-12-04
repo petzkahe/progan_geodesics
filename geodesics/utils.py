@@ -13,6 +13,9 @@ def fp32(*values):
 
 
 def initialize_endpoints_of_curve(initialization_mode):
+    
+    np.random.seed(endpoint_seed)
+    
     if initialization_mode == "random":
 
         z_start_value = np.random.uniform( low=latent_min, high=latent_max,
@@ -29,7 +32,8 @@ def safe_log(x):
     return tf.log( x + 1e-8 )
 
 
-# def pixel_norm(x, epsilon=1e-8):
-# #    with tf.variable_scope('PixelNorm'):
-#     #print(tf.shape(x))
-#     return x * tf.rsqrt(tf.reduce_sum(tf.square(x), axis=1, keepdims=True) + epsilon)
+def pixel_norm(x, epsilon=1e-8):
+    #  with tf.variable_scope('PixelNorm'):
+    #print(tf.shape(x))
+    return x * tf.rsqrt(tf.reduce_mean(tf.square(x), axis=1, keepdims=True) + epsilon)
+

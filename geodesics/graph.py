@@ -94,6 +94,7 @@ def parameterize_line( latent_start, latent_end ):
     theta = np.linspace( 0.0, 1.0, num=no_pts_on_geodesic )
     latents = np.asarray([(latent_start * (1 - theta[i]) + latent_end * theta[i]) for i in range( np.shape( theta )[0] )],dtype=np.float32 )
     #latents = latents * tf.rsqrt(tf.reduce_sum(tf.square(latents), axis=1, keepdims=True) + 1e-8)
+    #latents = latents * np.rsqrt()
     return latents
 
 
