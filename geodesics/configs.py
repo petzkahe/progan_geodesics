@@ -17,7 +17,7 @@ start_end_init="random" # initialization of start and end point
 #methods = ["proposed","Jacobian"]
 methods = ["linear", "Jacobian", "proposed"]
 
-endpoint_seed = 250 #300 #547
+endpoint_seed = 250 # 250 fairly ok endpoint images #300 #547
 
 dim_latent = 512 # dimension of latent space
 latent_min, latent_max=-2.0, 2.0
@@ -26,13 +26,13 @@ latent_min, latent_max=-2.0, 2.0
 no_pts_on_geodesic = 10 # number of interpolation points on curve in latent space with image points in sample space
 polynomial_degree = 2 # polynomial degree of parameterized curve in latent space
 
-hyper_critic_penalty=.05 # trade-off between squared dists and distriminator function
+hyper_critic_penalty=-.1 # trade-off between squared dists and distriminator function
 
 
-coefficient_init = .1 # x such that random initialization of poynomial coefficients parameterizing curve between [-x,x]
+coefficient_init = .001 # x such that random initialization of poynomial coefficients parameterizing curve between [-x,x]
 
-geodesic_training_steps = 1000 # number of geodesic training steps
-geodesic_learning_rate, adam_beta1, adam_beta2 = 1e-1, 0.5, 0.999
+geodesic_training_steps = 1000# number of geodesic training steps
+geodesic_learning_rate, adam_beta1, adam_beta2 = 1e-2, 0.5, 0.999
 
 # Old mid-training model
 #max_critic_value_found = -426.19928

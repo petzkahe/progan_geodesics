@@ -42,7 +42,7 @@ labels_plchldr = G.input_templates[1]
 
 #latents = latents[[477, 56, 83, 887, 583, 391, 86, 340, 341, 415]]  # hand-picked top-10
 
-for seed in range(0,100):
+for seed in range(0,20):
 
     print(seed)
     latents = np.random.RandomState( seed ).randn( 100, *Gs.input_shapes[0][1:] )  # 1000 random latents
