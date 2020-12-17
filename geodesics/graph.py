@@ -131,8 +131,9 @@ def import_vgg_graph(G,D, latents_tensor):
     img_data = tf.reshape(samples,[no_pts_on_geodesic,1024,1024,3])
     img_data = tf.image.resize_bilinear(img_data,(224,224))
     img_data = (img_data + 1.0) / 2.0 * 255.0 
-    img_data = tf.keras.applications.vgg19.preprocess_input(img_data)
-    
+    #img_data = tf.keras.applications.vgg19.preprocess_input(img_data)
+    img_data = tf.keras.layers.Lambda(lambda x : tf.keras.applications.vgg19.preprocess_input(x))(img_data)
+
     model= VGG19(weights='imagenet', include_top=False, input_tensor=Input(shape=(224, 224,3)))
     block1_conv2 = keras.Sequential(model.layers[:3])
     block2_conv2 = keras.Sequential(model.layers[:6])
@@ -179,7 +180,8 @@ def import_vgg_plus_disc_graph(G,D, latents_tensor):
     img_data = tf.reshape(samples,[no_pts_on_geodesic,1024,1024,3])
     img_data = tf.image.resize_bilinear(img_data,(224,224))
     img_data = (img_data + 1.0) / 2.0 * 255.0 
-    img_data = tf.keras.applications.vgg19.preprocess_input(img_data)
+    img_data = tf.keras.layers.Lambda(lambda x : tf.keras.applications.vgg19.preprocess_input(x))(img_data)
+    #img_data = tf.keras.applications.vgg19.preprocess_input(img_data)
     
     model= VGG19(weights='imagenet', include_top=False, input_tensor=Input(shape=(224, 224,3)))
     block1_conv2 = keras.Sequential(model.layers[:3])

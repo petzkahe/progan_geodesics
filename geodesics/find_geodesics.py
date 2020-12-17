@@ -4,7 +4,7 @@ import numpy as np
 import geodesics.tfutil as tfutil
 import geodesics.graph as graph
 from geodesics.configs import *
-
+from tensorflow.keras import backend as K
 
 
 ##########################################################################
@@ -46,6 +46,7 @@ def find_geodesics(latent_start, latent_end, methods):
 
 
 def learn_geodesic(method, latent_start, latent_end, sess, G, D):
+
 
 
 
@@ -168,6 +169,7 @@ def learn_geodesic(method, latent_start, latent_end, sess, G, D):
             latents_tensor, coefficients_free = graph.parameterize_curve(latent_start, latent_end)
 
             images, squared_differences, objective, latent_plchldr, labels_plchldr, critic_values = graph.import_vgg_graph( G, D , latents_tensor)
+            K.set_session(sess)
 
             # identical below
             sess.run(tf.variables_initializer([coefficients_free]))
@@ -212,6 +214,7 @@ def learn_geodesic(method, latent_start, latent_end, sess, G, D):
             latents_tensor, coefficients_free = graph.parameterize_curve(latent_start, latent_end)
 
             images, squared_differences, objective, latent_plchldr, labels_plchldr, critic_values = graph.import_vgg_plus_disc_graph( G, D , latents_tensor)
+            K.set_session(sess)
 
             # identical below
             sess.run(tf.variables_initializer([coefficients_free]))
