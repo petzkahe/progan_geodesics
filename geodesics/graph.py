@@ -13,6 +13,7 @@ from tensorflow.keras.applications.vgg19 import preprocess_input
 from tensorflow.keras.layers import Input
 
 
+
 def import_linear_graph(G,D):
     latents = G.input_templates[0]
     labels = G.input_templates[1]

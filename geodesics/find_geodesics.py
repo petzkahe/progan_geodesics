@@ -31,7 +31,7 @@ def find_geodesics(latent_start, latent_end, methods):
 
         #tf.keras.backend.clear_session()
         sess.close()
-        #tf.reset_default_graph()
+        tf.reset_default_graph()
 
 
 

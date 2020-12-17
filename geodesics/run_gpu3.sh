@@ -37,7 +37,7 @@
 # python ~/github/CelebAgeodesics/geodesics/main.py --geodesic_training_steps 20000 --subfolder_path "comparing_iteration_steps/" --file_name "20000"
 
 
-subpath="comparing_seeds/"
+subpath="testing/"
 nbr_iterations=50
 geodesic_learning_rate=1e-2
 no_pts_on_geodesic=4
