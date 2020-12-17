@@ -232,7 +232,7 @@ def learn_geodesic(method, latent_start, latent_end, sess, G, D):
 
 
 
-def learn_geodesic_vgg(method, latent_start, latent_end, sess, G, D):
+def learn_geodesic_vgg(method, latent_start, latent_end, sess, G, D, vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4):
 
         if method == "vgg":
 
@@ -241,8 +241,8 @@ def learn_geodesic_vgg(method, latent_start, latent_end, sess, G, D):
             # latent_tensor contains the latent points on the curve
             latents_tensor, coefficients_free = graph.parameterize_curve(latent_start, latent_end)
 
-            images, squared_differences, objective, latent_plchldr, labels_plchldr, critic_values = graph.import_vgg_graph( G, D , latents_tensor)
-            K.set_session(sess)
+            images, squared_differences, objective, latent_plchldr, labels_plchldr, critic_values = graph.import_vgg_graph( G, D , latents_tensor, vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4)
+
 
             # identical below
             sess.run(tf.variables_initializer([coefficients_free]))
@@ -286,8 +286,8 @@ def learn_geodesic_vgg(method, latent_start, latent_end, sess, G, D):
             # latent_tensor contains the latent points on the curve
             latents_tensor, coefficients_free = graph.parameterize_curve(latent_start, latent_end)
 
-            images, squared_differences, objective, latent_plchldr, labels_plchldr, critic_values = graph.import_vgg_plus_disc_graph( G, D , latents_tensor)
-            K.set_session(sess)
+            images, squared_differences, objective, latent_plchldr, labels_plchldr, critic_values = graph.import_vgg_plus_disc_graph( G, D , latents_tensor, vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4)
+
 
             # identical below
             sess.run(tf.variables_initializer([coefficients_free]))
