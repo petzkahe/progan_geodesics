@@ -14,13 +14,16 @@ def fp32(*values):
 
 def initialize_endpoints_of_curve(initialization_mode):
     
-    np.random.seed(endpoint_seed)
+    latent_min = -1
+    latent_max = 1
     
     if initialization_mode == "random":
 
+        np.random.seed(startpoint_seed)
         z_start_value = np.random.uniform( low=latent_min, high=latent_max,
                                            size=[512] ).astype(
             'float32' )
+        np.random.seed(endpoint_seed)
         z_end_value = np.random.uniform( low=latent_min, high=latent_max,
                                          size=[512] ).astype('float32')
     else:

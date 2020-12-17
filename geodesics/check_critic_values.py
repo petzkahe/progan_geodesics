@@ -4,17 +4,20 @@ os.environ["CUDA_VISIBLE_DEVICES"]="3"
 
 import pickle
 import PIL.Image
+import matplotlib.pyplot as plt
 
 import geodesics.tfutil as tfutil
 import numpy as np
 import tensorflow as tf
 import geodesics.utils as utils
 
-batch_size=32
+
+batch_size=48
 seed = 0
 
 max_values = []
 min_values = []
+critic_values_save = []
 
 # Initialize TensorFlow session.
 tf.InteractiveSession()
@@ -30,11 +33,11 @@ labels = np.zeros( [batch_size] + Gs.input_shapes[1][1:] )
 latents_plchldr = G.input_templates[0]
 labels_plchldr = G.input_templates[1]
 
-# D44ConvLayer = [v for v in tf.global_variables() if v.name == "D/4x4/Conv/weight:0"][0]
-# D44ConvLayer_killMiniBatchStd = D44ConvLayer[:, :, 512, :].assign( tf.zeros( (3, 3, 512) ) )
+D44ConvLayer = [v for v in tf.global_variables() if v.name == "D_paper/4x4/Conv/weight:0"][0]
+D44ConvLayer_killMiniBatchStd = D44ConvLayer[:, :, 512, :].assign( tf.zeros( (3, 3, 512) ) )
 
-# D44ConvLayer_woMiniBatchStd = tf.get_default_session().run(D44ConvLayer_killMiniBatchStd)
-# tfutil.set_vars( {D44ConvLayer: D44ConvLayer_woMiniBatchStd} )
+D44ConvLayer_woMiniBatchStd = tf.get_default_session().run(D44ConvLayer_killMiniBatchStd)
+tfutil.set_vars( {D44ConvLayer: D44ConvLayer_woMiniBatchStd} )
 
 
 # Generate latent vectors.
@@ -42,7 +45,9 @@ labels_plchldr = G.input_templates[1]
 
 #latents = latents[[477, 56, 83, 887, 583, 391, 86, 340, 341, 415]]  # hand-picked top-10
 
-for seed in range(0,20):
+
+
+for seed in range(0,100):
 
     print(seed)
     latents = np.random.RandomState( seed ).randn( 100, *Gs.input_shapes[0][1:] )  # 1000 random latents
@@ -54,14 +59,32 @@ for seed in range(0,20):
 
 
     [critic_values]=  tf.get_default_session().run([fake_scores_out], feed_dict={latents_plchldr : latents, labels_plchldr :labels })
+    critic_values = [item for sublist in critic_values for item in sublist] 
+
+    critic_values_save = critic_values_save + critic_values
+        
 
     max= np.max(critic_values)
     min= np.min(critic_values)
-
     max_values.append(max)
     min_values.append(min)
+    
+
 
 print("Maximal critic value found is  "+ str(np.max(max_values)))
 print("Minimal critic value found is  "+ str(np.min(min_values)))
+print("Mean value is " + str(np.mean(critic_values_save)))
+print("Standard deviation is " + str(np.std(critic_values_save)))
+
+np.save("models/critic_values_raw.npy",critic_values_save)
+#np.save("models/critic_values_minmax.npy",[critic_])
+
+
+critic_values_load = np.load("models/critic_values_raw.npy")
+
+plt.hist(critic_values_load,bins=40)
+plt.savefig("images/hist_of_critic_on_generated")
+
+
 
 

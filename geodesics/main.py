@@ -4,25 +4,40 @@ from geodesics.plotting import *
 from geodesics.configs import *
 
 
-import os
-os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" 
-os.environ["CUDA_VISIBLE_DEVICES"]="3"
+import argparse
 
 
-latent_start, latent_end = utils.initialize_endpoints_of_curve( start_end_init)
 
 
-geodesics_dict = find_geodesics(latent_start, latent_end, methods)
+def main(args=None):
 
-# returns a dictionary of results
-# key = methods: linear, Jacobian, proposed
-# value =  a list of two things: curves_in_latent_space_value, curves_in_sample_space_value
+    latent_start, latent_end = utils.initialize_endpoints_of_curve( start_end_init)
 
-for method in methods:
-    print(method)
-    geodesic_imgs, cost = geodesics_dict[method]
-    print(cost)
 
-    #plot_geodesic(geodesic_imgs, method)
+    geodesics_dict = find_geodesics(latent_start, latent_end, methods)
 
-plot_geodesic_comparison(geodesics_dict)
+    # returns a dictionary of results
+    # key = methods: linear, mse, mse_plus_disc
+    # value =  a list of two things: curves_in_latent_space_value, curves_in_sample_space_value
+
+    for method in methods:
+        print(method)
+        geodesic_imgs, cost, critics = geodesics_dict[method]
+        print("Squared differences:")
+        print(cost)
+        print("Sum: " + str(np.sum(cost)))
+        print("Critic values:")
+        print(critics)
+
+        #plot_geodesic(geodesic_imgs, method)
+
+    plot_geodesic_comparison(geodesics_dict)
+    plot_critics(geodesics_dict)
+
+    return None
+
+
+if __name__ == "__main__":
+    
+    main(args)
+

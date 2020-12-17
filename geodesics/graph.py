@@ -6,7 +6,12 @@ from geodesics.configs import *
 import geodesics.tfutil as tfutil
 import geodesics.utils as utils
 
-CUDA_DIVISIBLE_DEVICES = 0
+import tensorflow.keras as keras
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg19 import VGG19
+from tensorflow.keras.applications.vgg19 import preprocess_input
+from tensorflow.keras.layers import Input
+
 
 def import_linear_graph(G,D):
     latents = G.input_templates[0]
@@ -21,33 +26,33 @@ def import_linear_graph(G,D):
     squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
     
 
+    return samples, squared_differences, latents, labels, critic_values
 
 
-
-    return samples, squared_differences, latents, labels
-
-
-def import_Jacobian_graph(G,D, latents_tensor):
+def import_linear_in_sample_graph(G,D):
     latents = G.input_templates[0]
     labels = G.input_templates[1]
 
 
-    samples = G.get_output_for( latents_tensor, labels, is_training=False )
+    samples = G.get_output_for( latents, labels, is_training=False )
 
-    critic_values,_ = utils.fp32(D.get_output_for(samples, is_training=False))
-
-    #squared_differences = tf.multiply( tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] )), utils.fp32( 1.0 / (1024 * 1024 * 3) ) )
-    squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
+    samples_start = tf.broadcast_to(samples[0,:,:,:],[no_pts_on_geodesic,3,1024,1024])
+    samples_end = tf.broadcast_to(samples[-1,:,:,:],[no_pts_on_geodesic,3,1024,1024])
     
-    objective_Jacobian = tf.reduce_sum(squared_differences)
+    theta_tensor = tf.constant(np.linspace( 0.0, 1.0, num=no_pts_on_geodesic ),dtype=tf.float32,shape=[no_pts_on_geodesic,1,1,1])
+    new_samples = samples_start * (1-theta_tensor) + samples_end* theta_tensor
+
+    
+
+    critic_values,_ = utils.fp32(D.get_output_for(new_samples, is_training=False))
+
+    squared_differences = tf.multiply(tf.reduce_sum( tf.square( new_samples[1:, :, :, :] - new_samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
+    
+
+    return new_samples, squared_differences, latents, labels, critic_values
 
 
-    return samples, squared_differences, objective_Jacobian, latents, labels
-
-
-
-
-def import_proposed_graph(G,D, latents_tensor):
+def import_disc_graph(G,D, latents_tensor):
     latents = G.input_templates[0]
     labels = G.input_templates[1]
 
@@ -58,11 +63,15 @@ def import_proposed_graph(G,D, latents_tensor):
     squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
     
 
+    critic_values_capped = tf.clip_by_value(critic_values,min_critic_value_found,max_ideal_critic_value)
+
     small_eps = 0.01
 
     #### Make critic values positive by shifting by an offset, at offset the value shall be one
     # positified_critic_values = tf.clip_by_value( critic_values + offset,small_eps, np.infty)
-    positified_critic_values = tf.clip_by_value(scaling * (critic_values + offset), small_eps, 1-small_eps )
+    #positified_critic_values = tf.clip_by_value(scaling * (critic_values_capped - offset), small_eps, 1-small_eps )
+    positified_critic_values = tf.clip_by_value(scaling * (critic_values_capped - offset), small_eps, 1-small_eps )
+
 
     ### For the length of each interval take combination of critic values at both ends
     # Why take average? Avoids single points with low disciminator value along the trajectory since those hurt twice
@@ -78,14 +87,174 @@ def import_proposed_graph(G,D, latents_tensor):
     critic_objective = tf.divide( 1.0, averaged_critic_values )
 
 
-    # The proposed loss is a weighted average of the one over the critic and the Jacobian length, so that
+    # The disc loss is a weighted average of the one over the critic and the Jacobian length, so that
     # we enforce both small path length as well as real-looking images
 
-    objective_proposed = hyper_critic_penalty* tf.reduce_sum(critic_objective) + tf.reduce_sum(squared_differences )
+    objective = tf.reduce_sum(tf.square(critic_objective)) # + tf.reduce_sum(squared_differences )
 
-    return samples, squared_differences, objective_proposed, latents, labels, critic_objective
+    return samples, squared_differences, objective, latents, labels, critic_objective, critic_values
 
 
+def import_mse_graph(G,D, latents_tensor):
+    latents = G.input_templates[0]
+    labels = G.input_templates[1]
+
+
+    samples = G.get_output_for( latents_tensor, labels, is_training=False )
+
+    critic_values,_ = utils.fp32(D.get_output_for(samples, is_training=False))
+
+    #squared_differences = tf.multiply( tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] )), utils.fp32( 1.0 / (1024 * 1024 * 3) ) )
+    squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
+    
+    objective = tf.reduce_sum(squared_differences)
+
+
+    return samples, squared_differences, objective, latents, labels, critic_values
+
+
+
+
+def import_vgg_graph(G,D, latents_tensor):
+    latents = G.input_templates[0]
+    labels = G.input_templates[1]
+
+
+    samples = G.get_output_for( latents_tensor, labels, is_training=False )
+
+    critic_values,_ = utils.fp32(D.get_output_for(samples, is_training=False))
+
+    #squared_differences = tf.multiply( tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] )), utils.fp32( 1.0 / (1024 * 1024 * 3) ) )
+    squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
+    
+    img_data = tf.reshape(samples,[no_pts_on_geodesic,1024,1024,3])
+    img_data = tf.image.resize_bilinear(img_data,(224,224))
+    img_data = (img_data + 1.0) / 2.0 * 255.0 
+    img_data = tf.keras.applications.vgg19.preprocess_input(img_data)
+    
+    model= VGG19(weights='imagenet', include_top=False, input_tensor=Input(shape=(224, 224,3)))
+    block1_conv2 = keras.Sequential(model.layers[:3])
+    block2_conv2 = keras.Sequential(model.layers[:6])
+    block3_conv2 = keras.Sequential(model.layers[:9])
+    block4_conv4 = keras.Sequential(model.layers[:16])
+    block5_conv4 = keras.Sequential(model.layers[:21])
+    block1_conv2_features = block1_conv2(img_data)
+    block2_conv2_features = block2_conv2(img_data)
+    block3_conv2_features = block3_conv2(img_data)
+    block4_conv4_features = block4_conv4(img_data)
+    block5_conv4_features = block5_conv4(img_data)
+    block1_conv2_length = tf.size(block1_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
+    block2_conv2_length = tf.size(block2_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
+    block3_conv2_length = tf.size(block3_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
+    block4_conv4_length = tf.size(block4_conv4_features,out_type=tf.float32)/no_pts_on_geodesic
+    block5_conv4_length = tf.size(block5_conv4_features,out_type=tf.float32)/no_pts_on_geodesic
+    squared_differences_vgg = 0
+    squared_differences_vgg += 1.0/block1_conv2_length * tf.reduce_sum(tf.square((block1_conv2_features[:-1]-block1_conv2_features[1:])),axis=[1,2,3])
+    squared_differences_vgg += 1.0/block2_conv2_length * tf.reduce_sum(tf.square((block2_conv2_features[:-1]-block2_conv2_features[1:])),axis=[1,2,3])
+    squared_differences_vgg += 1.0/block3_conv2_length * tf.reduce_sum(tf.square((block3_conv2_features[:-1]-block3_conv2_features[1:])),axis=[1,2,3])
+    squared_differences_vgg += 1.0/block4_conv4_length * tf.reduce_sum(tf.square((block4_conv4_features[:-1]-block4_conv4_features[1:])),axis=[1,2,3])
+    squared_differences_vgg += 1.0/block5_conv4_length * tf.reduce_sum(tf.square((block5_conv4_features[:-1]-block5_conv4_features[1:])),axis=[1,2,3])
+
+
+    objective = tf.reduce_sum(squared_differences_vgg)
+
+
+    return samples, squared_differences, objective, latents, labels, critic_values
+
+
+def import_vgg_plus_disc_graph(G,D, latents_tensor):
+    latents = G.input_templates[0]
+    labels = G.input_templates[1]
+
+
+    samples = G.get_output_for( latents_tensor, labels, is_training=False )
+
+    critic_values,_ = utils.fp32(D.get_output_for(samples, is_training=False))
+
+    #squared_differences = tf.multiply( tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] )), utils.fp32( 1.0 / (1024 * 1024 * 3) ) )
+    squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
+    
+    # vgg part
+    img_data = tf.reshape(samples,[no_pts_on_geodesic,1024,1024,3])
+    img_data = tf.image.resize_bilinear(img_data,(224,224))
+    img_data = (img_data + 1.0) / 2.0 * 255.0 
+    img_data = tf.keras.applications.vgg19.preprocess_input(img_data)
+    
+    model= VGG19(weights='imagenet', include_top=False, input_tensor=Input(shape=(224, 224,3)))
+    block1_conv2 = keras.Sequential(model.layers[:3])
+    block2_conv2 = keras.Sequential(model.layers[:6])
+    block3_conv2 = keras.Sequential(model.layers[:9])
+    block4_conv4 = keras.Sequential(model.layers[:16])
+    block5_conv4 = keras.Sequential(model.layers[:21])
+    block1_conv2_features = block1_conv2(img_data)
+    block2_conv2_features = block2_conv2(img_data)
+    block3_conv2_features = block3_conv2(img_data)
+    block4_conv4_features = block4_conv4(img_data)
+    block5_conv4_features = block5_conv4(img_data)
+    block1_conv2_length = tf.size(block1_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
+    block2_conv2_length = tf.size(block2_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
+    block3_conv2_length = tf.size(block3_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
+    block4_conv4_length = tf.size(block4_conv4_features,out_type=tf.float32)/no_pts_on_geodesic
+    block5_conv4_length = tf.size(block5_conv4_features,out_type=tf.float32)/no_pts_on_geodesic
+    squared_differences_vgg = 0
+    squared_differences_vgg += 1.0/block1_conv2_length * tf.reduce_sum(tf.square((block1_conv2_features[:-1]-block1_conv2_features[1:])),axis=[1,2,3])
+    squared_differences_vgg += 1.0/block2_conv2_length * tf.reduce_sum(tf.square((block2_conv2_features[:-1]-block2_conv2_features[1:])),axis=[1,2,3])
+    squared_differences_vgg += 1.0/block3_conv2_length * tf.reduce_sum(tf.square((block3_conv2_features[:-1]-block3_conv2_features[1:])),axis=[1,2,3])
+    squared_differences_vgg += 1.0/block4_conv4_length * tf.reduce_sum(tf.square((block4_conv4_features[:-1]-block4_conv4_features[1:])),axis=[1,2,3])
+    squared_differences_vgg += 1.0/block5_conv4_length * tf.reduce_sum(tf.square((block5_conv4_features[:-1]-block5_conv4_features[1:])),axis=[1,2,3])
+
+
+    # disc part
+    critic_values_capped = tf.clip_by_value(critic_values,min_critic_value_found,max_ideal_critic_value)
+    small_eps = 0.01
+    positified_critic_values = tf.clip_by_value(scaling * (critic_values_capped - offset), small_eps, 1-small_eps )
+    averaged_critic_values = tf.exp(
+        tf.multiply( 0.5, tf.add( utils.safe_log( positified_critic_values[1:, :] ),
+                                  utils.safe_log(
+                                      positified_critic_values[:-1, :] ) ) ) )
+    critic_objective = tf.divide( 1.0, averaged_critic_values )
+    
+    objective = tf.reduce_sum( tf.square(hyper_critic_penalty*critic_objective + tf.sqrt(squared_differences_vgg) ) )
+        
+
+    return samples, squared_differences, objective, latents, labels, critic_values
+
+
+
+
+def import_mse_plus_disc_graph(G,D, latents_tensor):
+    latents = G.input_templates[0]
+    labels = G.input_templates[1]
+
+    samples = G.get_output_for( latents_tensor, labels, is_training=False )
+
+    squared_differences = tf.multiply(tf.reduce_sum( tf.square( samples[1:, :, :, :] - samples[:-1, :, :, :] ) , axis=[1,2,3]), utils.fp32(1.0/(1024*1024*3)))
+
+    critic_values, _ = utils.fp32( D.get_output_for( samples, is_training=False ) )
+
+
+    # disc part here
+
+    critic_values_capped = tf.clip_by_value(critic_values,min_critic_value_found,max_ideal_critic_value)
+    small_eps = 0.01
+    positified_critic_values = tf.clip_by_value(scaling * (critic_values_capped - offset), small_eps, 1-small_eps )
+    averaged_critic_values = tf.exp(
+        tf.multiply( 0.5, tf.add( utils.safe_log( positified_critic_values[1:, :] ),
+                                  utils.safe_log(
+                                      positified_critic_values[:-1, :] ) ) ) )
+    critic_objective = tf.divide( 1.0, averaged_critic_values )
+
+    
+
+    if use_objective_from_paper:
+        objective = tf.reduce_sum( tf.square(hyper_critic_penalty*critic_objective + tf.sqrt(squared_differences) ) )
+        
+    else:
+        objective = hyper_critic_penalty* tf.reduce_sum(critic_objective) + tf.reduce_sum(squared_differences )
+    
+    
+
+    return samples, squared_differences, objective, latents, labels, critic_objective, critic_values
 
 
 
