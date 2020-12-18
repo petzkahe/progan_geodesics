@@ -367,29 +367,14 @@ def prepare_VGG_layers(sess):
     
     vgg = VGG19(weights='imagenet', include_top=False)
    
+        #vgg_block1_conv2 = keras.Sequential([preproLayer]+vgg.layers[:3])
+    vgg_block1_conv2 = keras.Sequential(vgg.layers[:3])
+    vgg_block2_conv2 = keras.Sequential(vgg.layers[:6])
+    vgg_block3_conv2 = keras.Sequential(vgg.layers[:9])
+    vgg_block4_conv4 = keras.Sequential(vgg.layers[:16])
+    vgg_block5_conv4 = keras.Sequential(vgg.layers[:21])
     
-    class Prepro(keras.layers.Layer):
-        """vgg 19 preprocessing"""
-
-        def __init__(self, units=32, input_dim=(224,224,3)):
-            super(Prepro, self).__init__()
-        
-        def call(self, inputs):
-            p = preprocess_input
-            x = p(inputs)
-            del p
-            return x
-    
-    preproLayer=Prepro()
-        
-    #vgg_block1_conv2 = keras.Sequential([preproLayer]+vgg.layers[:3])
-    vgg_block1_conv2 = keras.Sequential([preproLayer] + vgg.layers[:3])
-    vgg_block2_conv2 = keras.Sequential([preproLayer] + vgg.layers[:6])
-    vgg_block3_conv2 = keras.Sequential([preproLayer] + vgg.layers[:9])
-    vgg_block4_conv4 = keras.Sequential([preproLayer] + vgg.layers[:16])
-    vgg_block5_conv4 = keras.Sequential([preproLayer] + vgg.layers[:21])
-    
-    del vgg, preproLayer
+    del vgg
     
     return vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4
     
