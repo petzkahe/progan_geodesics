@@ -366,6 +366,7 @@ def prepare_VGG_layers(sess):
     K.set_session(sess)
     
     vgg = VGG19(weights='imagenet', include_top=False)
+   
     
     class Prepro(keras.layers.Layer):
         """vgg 19 preprocessing"""
@@ -374,16 +375,19 @@ def prepare_VGG_layers(sess):
             super(Prepro, self).__init__()
         
         def call(self, inputs):
-            return preprocess_input(inputs)
+            p = preprocess_input
+            x = p(inputs)
+            del p
+            return x
     
     preproLayer=Prepro()
         
     #vgg_block1_conv2 = keras.Sequential([preproLayer]+vgg.layers[:3])
-    vgg_block1_conv2 = keras.Sequential(vgg.layers[:3])
-    vgg_block2_conv2 = keras.Sequential(vgg.layers[:6])
-    vgg_block3_conv2 = keras.Sequential(vgg.layers[:9])
-    vgg_block4_conv4 = keras.Sequential(vgg.layers[:16])
-    vgg_block5_conv4 = keras.Sequential(vgg.layers[:21])
+    vgg_block1_conv2 = keras.Sequential([preproLayer] + vgg.layers[:3])
+    vgg_block2_conv2 = keras.Sequential([preproLayer] + vgg.layers[:6])
+    vgg_block3_conv2 = keras.Sequential([preproLayer] + vgg.layers[:9])
+    vgg_block4_conv4 = keras.Sequential([preproLayer] + vgg.layers[:16])
+    vgg_block5_conv4 = keras.Sequential([preproLayer] + vgg.layers[:21])
     
     del vgg, preproLayer
     
