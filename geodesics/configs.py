@@ -17,7 +17,8 @@ def get_args():
     parser.add_argument("--endpoint_seed", help="", default=250, type=int)
     parser.add_argument("--no_pts_on_geodesic", help="", default=10, type=int)
     parser.add_argument("--polynomial_degree", help="", default=3, type=int)
-    parser.add_argument("--hyper_critic_penalty", help="", default=1, type=float)
+    parser.add_argument("--hyperparam_disc_vs_mse", help="", default=1, type=float)
+    parser.add_argument("--hyperparam_disc_vs_vgg", help="", default=1e6, type=float)
     parser.add_argument("--coefficient_init", help="", default=0.001, type=float)
     parser.add_argument("--geodesic_training_steps", help="", default=1000, type=int)
     parser.add_argument("--geodesic_learning_rate", help="", default=1e-4, type=float)
@@ -99,7 +100,8 @@ startpoint_seed = args.startpoint_seed  # 200
 endpoint_seed = args.endpoint_seed # 250 fairly ok endpoint images #300 #547
 no_pts_on_geodesic = args.no_pts_on_geodesic # number of interpolation points on curve in latent space with image points in sample space
 polynomial_degree = args.polynomial_degree # polynomial degree of parameterized curve in latent space
-hyper_critic_penalty = args.hyper_critic_penalty #.1 # trade-off between squared dists and distriminator function
+hyperparam_disc_vs_mse = args.hyperparam_disc_vs_mse #.1 # trade-off between mse and discriminator penalty
+hyperparam_disc_vs_vgg = args.hyperparam_disc_vs_vgg #.1 # trade-off between vgg dists and discriminator penalty
 coefficient_init = args.coefficient_init # .0001 # x such that random initialization of poynomial coefficients parameterizing curve between [-x,x]
 geodesic_training_steps = args.geodesic_training_steps # 100# number of geodesic training steps
 geodesic_learning_rate = args.geodesic_learning_rate

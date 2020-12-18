@@ -116,7 +116,7 @@ def import_mse_graph(G,D, latents_tensor):
 
 
 
-def import_vgg_graph(G,D, latents_tensor):
+def import_vgg_graph(G,D, latents_tensor, vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4):
     latents = G.input_templates[0]
     labels = G.input_templates[1]
 
@@ -131,20 +131,18 @@ def import_vgg_graph(G,D, latents_tensor):
     img_data = tf.reshape(samples,[no_pts_on_geodesic,1024,1024,3])
     img_data = tf.image.resize_bilinear(img_data,(224,224))
     img_data = (img_data + 1.0) / 2.0 * 255.0 
-    #img_data = tf.keras.applications.vgg19.preprocess_input(img_data)
-    img_data = tf.keras.layers.Lambda(lambda x : tf.keras.applications.vgg19.preprocess_input(x))(img_data)
-
-    model= VGG19(weights='imagenet', include_top=False, input_tensor=Input(shape=(224, 224,3)))
-    block1_conv2 = keras.Sequential(model.layers[:3])
-    block2_conv2 = keras.Sequential(model.layers[:6])
-    block3_conv2 = keras.Sequential(model.layers[:9])
-    block4_conv4 = keras.Sequential(model.layers[:16])
-    block5_conv4 = keras.Sequential(model.layers[:21])
-    block1_conv2_features = block1_conv2(img_data)
-    block2_conv2_features = block2_conv2(img_data)
-    block3_conv2_features = block3_conv2(img_data)
-    block4_conv4_features = block4_conv4(img_data)
-    block5_conv4_features = block5_conv4(img_data)
+    img_data = img_data[:,:,:,::-1]
+    mean = [03.939, 116.779, 123.68]
+    img_data = img_data - tf.broadcast_to(mean,shape=[no_pts_on_geodesic,224,224,3])
+    #img_data[..., 0] -= mean[0]
+    #img_data[..., 1] -= mean[1]
+    #img_data[..., 2] -= mean[2]
+    
+    block1_conv2_features = vgg_block1_conv2(img_data)
+    block2_conv2_features = vgg_block2_conv2(img_data)
+    block3_conv2_features = vgg_block3_conv2(img_data)
+    block4_conv4_features = vgg_block4_conv4(img_data)
+    block5_conv4_features = vgg_block5_conv4(img_data)
     block1_conv2_length = tf.size(block1_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
     block2_conv2_length = tf.size(block2_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
     block3_conv2_length = tf.size(block3_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
@@ -164,7 +162,7 @@ def import_vgg_graph(G,D, latents_tensor):
     return samples, squared_differences, objective, latents, labels, critic_values
 
 
-def import_vgg_plus_disc_graph(G,D, latents_tensor):
+def import_vgg_plus_disc_graph(G,D, latents_tensor, vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4):
     latents = G.input_templates[0]
     labels = G.input_templates[1]
 
@@ -180,20 +178,22 @@ def import_vgg_plus_disc_graph(G,D, latents_tensor):
     img_data = tf.reshape(samples,[no_pts_on_geodesic,1024,1024,3])
     img_data = tf.image.resize_bilinear(img_data,(224,224))
     img_data = (img_data + 1.0) / 2.0 * 255.0 
-    img_data = tf.keras.layers.Lambda(lambda x : tf.keras.applications.vgg19.preprocess_input(x))(img_data)
-    #img_data = tf.keras.applications.vgg19.preprocess_input(img_data)
+    check = preprocess_input(img_data)
+    img_data = img_data[:,:,:,::-1]
+    mean = [03.939, 116.779, 123.68]
+    img_data = img_data - tf.broadcast_to(mean,shape=[no_pts_on_geodesic,224,224,3])
+    #img_data[..., 0] -= mean[0]
+    #img_data[..., 1] -= mean[1]
+    #img_data[..., 2] -= mean[2]
+    print("Checking the preprocessing, should be a zero array:")
+    print(img_data-check)
     
-    model= VGG19(weights='imagenet', include_top=False, input_tensor=Input(shape=(224, 224,3)))
-    block1_conv2 = keras.Sequential(model.layers[:3])
-    block2_conv2 = keras.Sequential(model.layers[:6])
-    block3_conv2 = keras.Sequential(model.layers[:9])
-    block4_conv4 = keras.Sequential(model.layers[:16])
-    block5_conv4 = keras.Sequential(model.layers[:21])
-    block1_conv2_features = block1_conv2(img_data)
-    block2_conv2_features = block2_conv2(img_data)
-    block3_conv2_features = block3_conv2(img_data)
-    block4_conv4_features = block4_conv4(img_data)
-    block5_conv4_features = block5_conv4(img_data)
+    
+    block1_conv2_features = vgg_block1_conv2(img_data)
+    block2_conv2_features = vgg_block2_conv2(img_data)
+    block3_conv2_features = vgg_block3_conv2(img_data)
+    block4_conv4_features = vgg_block4_conv4(img_data)
+    block5_conv4_features = vgg_block5_conv4(img_data)
     block1_conv2_length = tf.size(block1_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
     block2_conv2_length = tf.size(block2_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
     block3_conv2_length = tf.size(block3_conv2_features,out_type=tf.float32)/no_pts_on_geodesic
@@ -217,7 +217,7 @@ def import_vgg_plus_disc_graph(G,D, latents_tensor):
                                       positified_critic_values[:-1, :] ) ) ) )
     critic_objective = tf.divide( 1.0, averaged_critic_values )
     
-    objective = tf.reduce_sum( tf.square(hyper_critic_penalty*critic_objective + tf.sqrt(squared_differences_vgg) ) )
+    objective = tf.reduce_sum( tf.square(hyperparam_disc_vs_vgg*critic_objective + tf.sqrt(squared_differences_vgg) ) )
         
 
     return samples, squared_differences, objective, latents, labels, critic_values
@@ -250,10 +250,10 @@ def import_mse_plus_disc_graph(G,D, latents_tensor):
     
 
     if use_objective_from_paper:
-        objective = tf.reduce_sum( tf.square(hyper_critic_penalty*critic_objective + tf.sqrt(squared_differences) ) )
+        objective = tf.reduce_sum( tf.square(hyperparam_disc_vs_mse*critic_objective + tf.sqrt(squared_differences) ) )
         
     else:
-        objective = hyper_critic_penalty* tf.reduce_sum(critic_objective) + tf.reduce_sum(squared_differences )
+        objective = hyperparam_disc_vs_mse* tf.reduce_sum(critic_objective) + tf.reduce_sum(squared_differences )
     
     
 

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # python ~/github/CelebAgeodesics/geodesics/main.py --startpoint_seed 200 --endpoint_seed 250 --subfolder_path "comparing_seeds/" --file_name "200_250"
 # python ~/github/CelebAgeodesics/geodesics/main.py --startpoint_seed 201 --endpoint_seed 251 --subfolder_path "comparing_seeds/" --file_name "201_251"
 # python ~/github/CelebAgeodesics/geodesics/main.py --startpoint_seed 202 --endpoint_seed 252 --subfolder_path "comparing_seeds/" --file_name "202_252"
@@ -37,41 +36,27 @@
 # python ~/github/CelebAgeodesics/geodesics/main.py --geodesic_training_steps 20000 --subfolder_path "comparing_iteration_steps/" --file_name "20000"
 
 
-# COMPARE SEEDS
-
-gpu_id=2
-subpath="comparing_seeds/"
-nbr_iterations=10000
-
+subpath="testing/"
+nbr_iterations=2000
+geodesic_learning_rate=1e-3
+no_pts_on_geodesic=10
 
 start=200
 end=250
-python ~/github/CelebAgeodesics/geodesics/main.py --gpu_id $gpu_id --geodesic_training_steps $nbr_iterations \
+python ~/github/CelebAgeodesics/geodesics/main.py \
+	--no_pts_on_geodesic $no_pts_on_geodesic \
+	--geodesic_training_steps $nbr_iterations \
 	--subfolder_path $subpath \
-	--startpoint_seed $start --endpoint_seed $end --file_name "${start}_${end}"
-	
-start=204
-end=254
-python ~/github/CelebAgeodesics/geodesics/main.py --gpu_id $gpu_id --geodesic_training_steps $nbr_iterations \
-	--subfolder_path $subpath \
-	--startpoint_seed $start --endpoint_seed $end --file_name "${start}_${end}"
+	--geodesic_learning_rate $geodesic_learning_rate \
+	--startpoint_seed $start --endpoint_seed $end --file_name "${start}_${end}" \
+	--methods "vgg" "vgg_plus_disc"
+	#--methods "disc_only" "vgg" "linear" "mse" 
+	--methods "linear" "linear_in_sample" "disc_only" "mse" "mse_plus_disc" "vgg_plus_disc"
 	
 start=205
 end=255
-python ~/github/CelebAgeodesics/geodesics/main.py --gpu_id $gpu_id --geodesic_training_steps $nbr_iterations \
-	--subfolder_path $subpath \
-	--startpoint_seed $start --endpoint_seed $end --file_name "${start}_${end}"
-	
-start=206
-end=251
-python ~/github/CelebAgeodesics/geodesics/main.py --gpu_id $gpu_id --geodesic_training_steps $nbr_iterations \
-	--subfolder_path $subpath \
-	--startpoint_seed $start --endpoint_seed $end --file_name "${start}_${end}"
 
-start=203
-end=256
-python ~/github/CelebAgeodesics/geodesics/main.py --gpu_id $gpu_id --geodesic_training_steps $nbr_iterations \
-	--subfolder_path $subpath \
-	--startpoint_seed $start --endpoint_seed $end --file_name "${start}_${end}"
+
+
 
 
