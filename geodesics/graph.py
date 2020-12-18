@@ -133,9 +133,10 @@ def import_vgg_graph(G,D, latents_tensor, vgg_block1_conv2, vgg_block2_conv2, vg
     img_data = (img_data + 1.0) / 2.0 * 255.0 
     img_data = img_data[:,:,:,::-1]
     mean = [03.939, 116.779, 123.68]
-    img_data[..., 0] -= mean[0]
-    img_data[..., 1] -= mean[1]
-    img_data[..., 2] -= mean[2]
+    img_data = img_data - tf.broadcast_to(mean,shape=[no_pts_on_geodesic,224,224,3])
+    #img_data[..., 0] -= mean[0]
+    #img_data[..., 1] -= mean[1]
+    #img_data[..., 2] -= mean[2]
     
     block1_conv2_features = vgg_block1_conv2(img_data)
     block2_conv2_features = vgg_block2_conv2(img_data)
@@ -177,12 +178,13 @@ def import_vgg_plus_disc_graph(G,D, latents_tensor, vgg_block1_conv2, vgg_block2
     img_data = tf.reshape(samples,[no_pts_on_geodesic,1024,1024,3])
     img_data = tf.image.resize_bilinear(img_data,(224,224))
     img_data = (img_data + 1.0) / 2.0 * 255.0 
-    check = preprocess(img_data)
+    check = preprocess_input(img_data)
     img_data = img_data[:,:,:,::-1]
     mean = [03.939, 116.779, 123.68]
-    img_data[..., 0] -= mean[0]
-    img_data[..., 1] -= mean[1]
-    img_data[..., 2] -= mean[2]
+    img_data = img_data - tf.broadcast_to(mean,shape=[no_pts_on_geodesic,224,224,3])
+    #img_data[..., 0] -= mean[0]
+    #img_data[..., 1] -= mean[1]
+    #img_data[..., 2] -= mean[2]
     print("Checking the preprocessing, should be a zero array:")
     print(img_data-check)
     
@@ -215,7 +217,7 @@ def import_vgg_plus_disc_graph(G,D, latents_tensor, vgg_block1_conv2, vgg_block2
                                       positified_critic_values[:-1, :] ) ) ) )
     critic_objective = tf.divide( 1.0, averaged_critic_values )
     
-    objective = tf.reduce_sum( tf.square(hyper_critic_penalty*critic_objective + tf.sqrt(squared_differences_vgg) ) )
+    objective = tf.reduce_sum( tf.square(hyperparam_disc_vs_vgg*critic_objective + tf.sqrt(squared_differences_vgg) ) )
         
 
     return samples, squared_differences, objective, latents, labels, critic_values
@@ -248,10 +250,10 @@ def import_mse_plus_disc_graph(G,D, latents_tensor):
     
 
     if use_objective_from_paper:
-        objective = tf.reduce_sum( tf.square(hyper_critic_penalty*critic_objective + tf.sqrt(squared_differences) ) )
+        objective = tf.reduce_sum( tf.square(hyperparam_disc_vs_mse*critic_objective + tf.sqrt(squared_differences) ) )
         
     else:
-        objective = hyper_critic_penalty* tf.reduce_sum(critic_objective) + tf.reduce_sum(squared_differences )
+        objective = hyperparam_disc_vs_mse* tf.reduce_sum(critic_objective) + tf.reduce_sum(squared_differences )
     
     
 
