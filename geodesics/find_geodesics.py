@@ -28,7 +28,7 @@ def find_geodesics(latent_start, latent_end, methods):
             print("Loading GAN networks")
             G, D = prepare_GAN_nets( sess )
             
-            if "vgg" in method:
+            if method=="vgg":
                 vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4 = prepare_VGG_layers(sess)
             
             print("Optimizing path for " + method + "...")
@@ -366,14 +366,13 @@ def prepare_VGG_layers(sess):
     vgg = VGG19(weights='imagenet', include_top=False)
     
     class Prepro(keras.layers.Layer):
-    """vgg 19 preprocessing"""
+        """vgg 19 preprocessing"""
 
         def __init__(self, units=32, input_dim=(224,224,3)):
             super(Prepro, self).__init__()
-            self.prepro = preprocess_input
         
         def call(self, inputs):
-            return self.prepro(inputs)
+            return preprocessing(inputs)
     
     preproLayer=Prepro()
         
