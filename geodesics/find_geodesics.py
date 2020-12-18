@@ -365,20 +365,23 @@ def prepare_VGG_layers(sess):
     
     vgg = VGG19(weights='imagenet', include_top=False)
     
-    i = Input([224, 224,3], dtype = tf.float32)
-    i_prepro = preprocess_input(i)
+    class Prepro(keras.layers.Layer):
+    """vgg 19 preprocessing"""
+
+        def __init__(self, units=32, input_dim=(224,224,3)):
+            super(Prepro, self).__init__()
+            self.prepro = preprocess_input
+        
+        def call(self, inputs):
+            return self.prepro(inputs)
     
-    block1_conv2 = keras.Sequential(vgg.layers[:3])(i_prepro)
-    block2_conv2 = keras.Sequential(vgg.layers[:6])(i_prepro)
-    block3_conv2 = keras.Sequential(vgg.layers[:9])(i_prepro)
-    block4_conv4 = keras.Sequential(vgg.layers[:16])(i_prepro)
-    block5_conv4 = keras.Sequential(vgg.layers[:21])(i_prepro)
-    
-    vgg_block1_conv2 = tf.keras.Model(inputs=[i], outputs=[block1_conv2])
-    vgg_block2_conv2 = tf.keras.Model(inputs=[i], outputs=[block2_conv2])
-    vgg_block3_conv2 = tf.keras.Model(inputs=[i], outputs=[block3_conv2])
-    vgg_block4_conv4 = tf.keras.Model(inputs=[i], outputs=[block4_conv4])
-    vgg_block5_conv4 = tf.keras.Model(inputs=[i], outputs=[block5_conv4])
+    preproLayer=Prepro()
+        
+    vgg_block1_conv2 = keras.Sequential([preproLayer]+vgg.layers[:3])
+    vgg_block2_conv2 = keras.Sequential([preproLayer]+vgg.layers[:6])
+    vgg_block3_conv2 = keras.Sequential([preproLayer]+vgg.layers[:9])
+    vgg_block4_conv4 = keras.Sequential([preproLayer]+vgg.layers[:16])
+    vgg_block5_conv4 = keras.Sequential([preproLayer]+vgg.layers[:21])
     
     
     return vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4
