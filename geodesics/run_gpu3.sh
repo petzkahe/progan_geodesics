@@ -50,7 +50,7 @@ python ~/github/CelebAgeodesics/geodesics/main.py \
 	--subfolder_path $subpath \
 	--geodesic_learning_rate $geodesic_learning_rate \
 	--startpoint_seed $start --endpoint_seed $end --file_name "${start}_${end}" \
-	--methods "vgg_plus_disc" "vgg"
+	--methods "vgg" "vgg_plus_disc"
 	#--methods "disc_only" "vgg"
 	#--methods "linear" "linear_in_sample" "disc_only" "mse" "mse_plus_disc" "vgg_plus_disc"
 	
