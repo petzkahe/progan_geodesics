@@ -372,7 +372,7 @@ def prepare_VGG_layers(sess):
             super(Prepro, self).__init__()
         
         def call(self, inputs):
-            return preprocessing(inputs)
+            return preprocess_input(inputs)
     
     preproLayer=Prepro()
         
