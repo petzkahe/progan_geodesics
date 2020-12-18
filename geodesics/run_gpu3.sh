@@ -51,7 +51,7 @@ python ~/github/CelebAgeodesics/geodesics/main.py \
 	--geodesic_learning_rate $geodesic_learning_rate \
 	--startpoint_seed $start --endpoint_seed $end --file_name "${start}_${end}" \
 	--methods "vgg" "vgg_plus_disc"
-	#--methods "disc_only" "vgg"
+	#--methods "disc_only" "vgg" "linear" "mse" 
 	#--methods "linear" "linear_in_sample" "disc_only" "mse" "mse_plus_disc" "vgg_plus_disc"
 	
 start=205

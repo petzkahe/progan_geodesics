@@ -28,7 +28,7 @@ def find_geodesics(latent_start, latent_end, methods):
             print("Loading GAN networks")
             G, D = prepare_GAN_nets( sess )
             
-            if method=="vgg":
+            if "vgg" in method: 
                 vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4 = prepare_VGG_layers(sess)
             
             print("Optimizing path for " + method + "...")
@@ -41,9 +41,11 @@ def find_geodesics(latent_start, latent_end, methods):
 
             print("... Done!")
 
-
-        tf.keras.backend.clear_session()
         sess.close()
+
+        if "vgg" in method:
+            del vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, 
+            tf.keras.backend.clear_session()
         tf.reset_default_graph()
 
 
@@ -376,12 +378,16 @@ def prepare_VGG_layers(sess):
     
     preproLayer=Prepro()
         
-    vgg_block1_conv2 = keras.Sequential([preproLayer]+vgg.layers[:3])
-    vgg_block2_conv2 = keras.Sequential([preproLayer]+vgg.layers[:6])
-    vgg_block3_conv2 = keras.Sequential([preproLayer]+vgg.layers[:9])
-    vgg_block4_conv4 = keras.Sequential([preproLayer]+vgg.layers[:16])
-    vgg_block5_conv4 = keras.Sequential([preproLayer]+vgg.layers[:21])
+    #vgg_block1_conv2 = keras.Sequential([preproLayer]+vgg.layers[:3])
+    vgg_block1_conv2 = keras.Sequential(vgg.layers[:3])
+    vgg_block2_conv2 = keras.Sequential(vgg.layers[:6])
+    vgg_block3_conv2 = keras.Sequential(vgg.layers[:9])
+    vgg_block4_conv4 = keras.Sequential(vgg.layers[:16])
+    vgg_block5_conv4 = keras.Sequential(vgg.layers[:21])
     
+    del vgg, preproLayer
     
     return vgg_block1_conv2, vgg_block2_conv2, vgg_block3_conv2, vgg_block4_conv4, vgg_block5_conv4
     
+# vgg preprocessing: 
+
