@@ -1,4 +1,4 @@
-name: CelebAgeodesics
+name: progan_geodesics
 channels:
  - defaults
 dependencies:

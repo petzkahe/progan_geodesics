@@ -1,4 +1,22 @@
-# CelebAgeodesics
+# progan_geodesics
+
+--------------------------
+VERSION:
+  This is the python code our paper "Discriminating Against Unrealistic Interpolations in Generative Adversarial Networks", implemented as an add-on to (the tensorflow-gpu version of) "Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017), herein denoted ProGAN. 
+
+--------------------------
+ENVIRONMENT SETUP:
+  We have set up a working environment using conda on a Linux Ubuntu 16.04 computational machine running one NVIDIA Tesla V100 32GB GPU at a time. The use of conda simplifies the installation of compatible cudatoolkit, tensoflow-gpu, etc. The following steps describe 
+  
+  - Clone this repository to your machine.
+  - Install conda using apt-get or similar. We use version 4.9.2 here.
+  - Create environment from this repo's environment.yml by typing in your terminal:
+
+    conda env create -f environment.yml
+
+  - activate your enviroment by typing 
+
+    conda activate progan_geodesics
 
 --------------------------
 DESCRIPTION:
