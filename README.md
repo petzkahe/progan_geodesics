@@ -2,10 +2,12 @@
 
 --------------------------
 VERSION:
+
   This is the python code our paper "Discriminating Against Unrealistic Interpolations in Generative Adversarial Networks", implemented as an add-on to (the tensorflow-gpu version of) "Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017), herein denoted ProGAN. 
 
 --------------------------
 ENVIRONMENT SETUP:
+
   We have set up a working environment using conda on a Linux Ubuntu 16.04 computational machine running one NVIDIA Tesla V100 32GB GPU at a time. The use of conda simplifies the installation of compatible cudatoolkit, tensoflow-gpu, etc. The following steps describe 
   
   - Clone this repository to your machine.
@@ -19,13 +21,14 @@ ENVIRONMENT SETUP:
     conda activate progan_geodesics
 
 --------------------------
-DESCRIPTION:
-  The code allows to calculate statisics for the discriminator, find geodesics and create videos from the geodesics
+USAGE:
+
+  The code may be used to find geodesics between user-selected points in the latent space, but also allows for calculation of statisics for the discriminator, and creating videos of the GAN outputs along the geodesics.
 
 --------------------------
 RUNNING THE CODE:
 
-  The main file should be run from the folder "./geodesicsProgan" with the command: 
+  The main file should be run from the repo folder with the command: 
 
     python main.py
 
