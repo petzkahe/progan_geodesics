@@ -1,6 +1,6 @@
 # Discriminating Against Unrealistic Interpolations in Generative Adversarial Networks
 
-# - Implemented add-on for ProGAN ("Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017)) 
+### - Implemented add-on for ProGAN ("Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017)) 
 
 ## VERSION:
   1.0: Compability 
