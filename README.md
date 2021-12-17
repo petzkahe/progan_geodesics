@@ -13,8 +13,10 @@ ENVIRONMENT SETUP:
   - Clone this repository to your machine.
   - Install conda using apt-get or similar. We use version 4.9.2 here.
   - Create environment from this repo's environment.yml by typing in your terminal:
-
+    
+    ´´´
     conda env create -f environment.yml
+    ```
 
   - activate your enviroment by typing 
 
