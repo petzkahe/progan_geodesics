@@ -15,13 +15,13 @@ ENVIRONMENT SETUP:
   - Create environment from this repo's environment.yml by typing in your terminal:
     
   ```
-  conda env create -f environment.yml
+  $ conda env create -f environment.yml
   ``` 
   
   - activate your enviroment by typing 
 
   ``` 
-  conda activate progan_geodesics
+  $ conda activate progan_geodesics
   ```
 
 --------------------------
