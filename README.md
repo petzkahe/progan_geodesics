@@ -42,7 +42,7 @@
   ```
 ## CONFIGURATIONS:
 
-  Current default values for configurations can be checked and adjusted in the beginning of the `configs.py` file before `CONFIGURATIONS END`
+  Current default values for configurations can be checked and adjusted in the beginning of `configs.py` above "`CONFIGURATIONS END`".
 
   All default values can be overwritten from the command line by adding the correspoding flag.
   For example, to change the experiment_id and add an optional run_id, use the command:
