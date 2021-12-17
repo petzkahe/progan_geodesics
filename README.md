@@ -22,7 +22,7 @@ ENVIRONMENT SETUP:
 
   ``` 
   conda activate progan_geodesics
-  
+  ```
 
 --------------------------
 USAGE:
