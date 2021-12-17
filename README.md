@@ -36,15 +36,11 @@
 
   The main file should be run from the repo folder with the command: 
   
-  ```
   $ python main.py
-  ```
   
   Alternatively one can set up and run bash scripts from the same location with
   
-  ```
   $ bash bashScripts/name_of_bash_script
-  ```
 
 ## CONFIGURATIONS:
 
@@ -53,20 +49,16 @@
   All default values can be overwritten from the command line by adding the correspoding flag.
   For example, to change the experiment_id and add an optional run_id, use the command:
 
-    ```
     $ python main.py --run_id="my_new_experiment" --optional_run_id="test_1"
-    ```
     
   This will save the results in the folder `results/my_experiment` and all file names have a suffix of `test_1`
 
   By default, the code calculates discriminator statistics, trains geodesics and creates a video.
   Each of these steps can be skipped by using the flags:
      
-    ```
     COMPUTE_STATISTICS_OFF
     TRAIN_GEODESICS_OFF 
     VIDEO_GENERATION_OFF 
-    ```
   
   For example, if you only want to train the geodesics, then use the command
 
