@@ -7,21 +7,21 @@
 
 ## ENVIRONMENT SETUP:
 
-  We have set up a working environment using conda on a Linux Ubuntu 16.04 computational machine running one NVIDIA Tesla V100 32GB GPU at a time. The use of conda simplifies the installation of compatible cudatoolkit, tensoflow-gpu, etc. The following steps describe 
+  We have set up a working environment using conda on a Linux Ubuntu 16.04 computational machine running one NVIDIA Tesla V100 32GB GPU at a time. The use of conda simplifies the installation of compatible `cudatoolkit`, `tensoflow-gpu`, etc. The following steps describe 
   
   - Clone this repository to your machine.
   - Install conda using `apt-get` or similar. We use version 4.9.2 here.
   - In terminal, from the local clone directory, create environment using the included `environment.yml` :
     
-  ```
-  $ conda env create -f environment.yml
-  ``` 
+    ```
+    $ conda env create -f environment.yml
+    ``` 
   
   - activate your enviroment by typing 
 
-  ``` 
-  $ conda activate progan_geodesics
-  ```
+    ``` 
+    $ conda activate progan_geodesics
+    ```
 
 --------------------------
 USAGE:
@@ -67,15 +67,11 @@ CONFIGURATIONS:
   
   For example, if you only want to train the geodesics, then use the command
 
-    ```
     $ python main.py --COMPUTE_STATISTICS_OFF --VIDEO_GENERATION_OFF
-    ```
     
   If you do not want to run all the default methods, then use the command
     
-    ```
     $ python main.py --methods "method_1" "method_2" "method_3"
-    ```
     
   REUSE_OF_DISCRIMINATOR_STATISTICS:     
   
@@ -83,14 +79,14 @@ CONFIGURATIONS:
   If the same experiment_id is used again, the code loads these values in the following run during configuration, so these values are used if no new critic statistics are calculated. 
   
   This suggests the following usage:
-    Never use the same `experiment_id` for different models
-    Turn off critic statistics if the same model and experiment_id have been used before.
+    - Never use the same `experiment_id` for different models
+    - Turn off critic statistics if the same model and `experiment_id` have been used before.
   
   For example, if you want to run different start and endpoints for one model, use the commands
   
     $ python main.py --start=1 --end=2 --experiment_id="my_experiment" --optional_run_id="seeds_1_2"
-    $ python main.py --start=3 --end=4 --experiment_id="my_experiment" --optional_run_id="seeds_3_4" --COMPUTTE_STATISTICS_OFF 
-    $ python main.py --start=5 --end=6 --experiment_id="my_experiment" --optional_run_id="seeds_5_6" --COMPUTTE_STATISTICS_OFF
+    $ python main.py --start=3 --end=4 --experiment_id="my_experiment" --optional_run_id="seeds_3_4" --COMPUTE_STATISTICS_OFF 
+    $ python main.py --start=5 --end=6 --experiment_id="my_experiment" --optional_run_id="seeds_5_6" --COMPUTE_STATISTICS_OFF
     
 ------------------------------------------
 RESULTS:
