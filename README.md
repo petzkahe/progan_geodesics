@@ -12,7 +12,7 @@
 
 ## ENVIRONMENT SETUP:
 
-  We have set up a local python environment using conda on the, which simplifies installation of combatible packages, e.g.,  `cudatoolkit` and `tensoflow-gpu`. Before using the code, you can setup this environment by following these steps:
+  We have set up a local python environment using conda on a computational machine with specs as above. Conda simplifies the installation of combatible packages, e.g.,  `cudatoolkit` and `tensoflow-gpu`. One may instead replicate the environment (as spec'd in `environment.yml` in Docker by defining the specified package versions in a Dockerfile. To set up this environment using conda, take these steps:
   
   1) Clone this repository to your machine.
   2) Install conda using `apt-get` or similar. We use version 4.9.2 here.
