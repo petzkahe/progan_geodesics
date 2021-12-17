@@ -2,7 +2,7 @@
 
 ### - Implemented add-on for ProGAN ("Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017)) 
 
-## Compability list:  
+## Reproduction compability specs:  
 
   - Ubunutu 16.04
   - NVIDIA Tesla V100 32 GB GPUs with driver 465.19.01
