@@ -18,15 +18,12 @@
   2) Install conda using `apt-get` or similar. We use version 4.9.2 here.
   3) In terminal, from the local clone directory, create environment using the included `environment.yml` :
     
-    ```
     $ conda env create -f environment.yml
-    ``` 
   
   4) activate your enviroment by typing 
-
-    ``` 
+ 
     $ conda activate progan_geodesics
-    ```
+    
 
 ## USAGE:
 
@@ -36,12 +33,14 @@
 
   The main file should be run from the repo folder with the command: 
   
+  ```
   $ python main.py
-  
+  ```
   Alternatively one can set up and run bash scripts from the same location with
   
-  $ bash bashScripts/name_of_bash_script
-
+  ```
+  $ bash bashScripts/name_of_bash_script
+  ```
 ## CONFIGURATIONS:
 
   Current default values for configurations can be checked and adjusted in the beginning of the `configs.py` file before `CONFIGURATIONS END`
