@@ -2,13 +2,16 @@
 
 ### - Implemented add-on for ProGAN ("Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017)) 
 
-## Reproduction compability specs:  
+## REPRODUCTION COMPABILITY SPECS:  
 
   - Ubunutu 16.04
   - NVIDIA Tesla V100 32 GB GPUs with driver 465.19.01
   - Cuda Toolkit version 9.0
   - Tensorflow with GPU version 1.12
 
+## USAGE:
+
+  This implementation may be used to find geodesics between user-selected points in the latent space, and corresponding images or videos from the output space. It can also be used to estimate statisics of the discriminator.
 
 ## ENVIRONMENT SETUP:
 
@@ -24,10 +27,6 @@
  
     $ conda activate progan_geodesics
     
-
-## USAGE:
-
-  The code may be used to find geodesics between user-selected points in the latent space, but also allows for calculation of statisics for the discriminator, and creating videos of the GAN outputs along the geodesics.
 
 ## RUNNING THE CODE:
 
