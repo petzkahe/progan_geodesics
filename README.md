@@ -112,7 +112,7 @@ RESULTS:
       An image containing the critic values along the geodesics for each method
       An image containing the square differences along the geodesics for each method
   
-    Coefficients of the geodesics are saved under `results/experiment_id/coefficient`
+  Coefficients of the geodesics are saved under `results/experiment_id/coefficient`
 
   Video generation returns 
     A video showing all geodesics under `results/experiment_id/videos`
