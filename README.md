@@ -2,8 +2,8 @@
 
 ### - Implemented add-on for ProGAN ("Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017)) 
 
-## VERSION:
-  1.0: Compability 
+## VERSION 1.0:
+  Compability list:  
   - Ubunutu 16.04
   - NVIDIA Tesla V100 32 GB GPUs with driver 465.19.01
   - Cuda Toolkit version 9.0
@@ -12,7 +12,7 @@
 
 ## ENVIRONMENT SETUP:
 
-  We have set up a local python environment using conda, which simplifies installation of combatible packages, e.g.,  `cudatoolkit` and `tensoflow-gpu`. Before using the code, you can setup this environment by following these steps:
+  We have set up a local python environment using conda on the, which simplifies installation of combatible packages, e.g.,  `cudatoolkit` and `tensoflow-gpu`. Before using the code, you can setup this environment by following these steps:
   
   1) Clone this repository to your machine.
   2) Install conda using `apt-get` or similar. We use version 4.9.2 here.
