@@ -34,11 +34,11 @@ RUNNING THE CODE:
 
   The main file should be run from the repo folder with the command: 
 
-    python main.py
+  $ python main.py
 
   Alternatively one can set up and run bash scripts from the same location with
   
-  bash bashScripts/name_of_bash_script
+  $ bash bashScripts/name_of_bash_script
 
 ---------------------------
 CONFIGURATIONS:
