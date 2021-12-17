@@ -45,9 +45,9 @@
   Current default values for configurations can be checked and adjusted in the beginning of `configs.py` above "`CONFIGURATIONS END`".
 
   All default values can be overwritten from the command line by adding the correspoding flag.
-  For example, to change the experiment_id and add an optional run_id, use the command:
+  For example, to change the `experiment_id` and add an `optional_run_id`, use the command:
 
-    $ python main.py --run_id="my_new_experiment" --optional_run_id="test_1"
+    $ python main.py --experiment_id="my_new_experiment" --optional_run_id="test_1"
     
   This will save the results in the folder `results/my_experiment` and all file names have a suffix of `test_1`
 
