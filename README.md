@@ -1,23 +1,28 @@
-# progan_geodesics
+# Discriminating Against Unrealistic Interpolations in Generative Adversarial Networks
+
+# - Implemented add-on for ProGAN ("Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017)) 
 
 ## VERSION:
-
-  This is the python code our paper "Discriminating Against Unrealistic Interpolations in Generative Adversarial Networks", implemented as an add-on to (the tensorflow-gpu version of) "Progressive Growing of GANs for Improved Quality, Stability, and Variation" by Karras et al. (2017), herein denoted ProGAN. 
+  1.0: Compability 
+  - Ubunutu 16.04
+  - NVIDIA Tesla V100 32 GB GPUs with driver 465.19.01
+  - Cuda Toolkit version 9.0
+  - Tensorflow with GPU version 1.12
 
 
 ## ENVIRONMENT SETUP:
 
-  We have set up a working environment using conda on a Linux Ubuntu 16.04 computational machine running one NVIDIA Tesla V100 32GB GPU at a time. The use of conda simplifies the installation of compatible `cudatoolkit`, `tensoflow-gpu`, etc. The following steps describe 
+  We have set up a local python environment using conda, which simplifies installation of combatible packages, e.g.,  `cudatoolkit` and `tensoflow-gpu`. Before using the code, you can setup this environment by following these steps:
   
-  - Clone this repository to your machine.
-  - Install conda using `apt-get` or similar. We use version 4.9.2 here.
-  - In terminal, from the local clone directory, create environment using the included `environment.yml` :
+  1) Clone this repository to your machine.
+  2) Install conda using `apt-get` or similar. We use version 4.9.2 here.
+  3) In terminal, from the local clone directory, create environment using the included `environment.yml` :
     
     ```
     $ conda env create -f environment.yml
     ``` 
   
-  - activate your enviroment by typing 
+  4) activate your enviroment by typing 
 
     ``` 
     $ conda activate progan_geodesics
