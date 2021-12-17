@@ -58,7 +58,7 @@ CONFIGURATIONS:
 
   By default, the code calculates discriminator statistics, trains geodesics and creates a video.
   Each of these steps can be skipped by using the flags:
-    
+     
     ```
     COMPUTE_STATISTICS_OFF
     TRAIN_GEODESICS_OFF 
