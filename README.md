@@ -10,7 +10,7 @@
   We have set up a working environment using conda on a Linux Ubuntu 16.04 computational machine running one NVIDIA Tesla V100 32GB GPU at a time. The use of conda simplifies the installation of compatible cudatoolkit, tensoflow-gpu, etc. The following steps describe 
   
   - Clone this repository to your machine.
-  - Install conda using apt-get or similar. We use version 4.9.2 here.
+  - Install conda using `apt-get` or similar. We use version 4.9.2 here.
   - In terminal, from the local clone directory, create environment using the included `environment.yml` :
     
   ```
@@ -88,10 +88,8 @@ CONFIGURATIONS:
   
   For example, if you want to run different start and endpoints for one model, use the commands
   
-    ``` 
-    python main.py --start=1 --end=2 --experiment_id="my_experiment" --optional_run_id="seeds_1_2"
-    python main.py --start=3 --end=4 --experiment_id="my_experiment" --optional_run_id="seeds_3_4" --COMPUTTE_STATISTICS_OFF
-    python main.py --start=5 --end=6 --experiment_id="my_experiment" --optional_run_id="seeds_5_6" --COMPUTTE_STATISTICS_OFF
+    ```
+    python main.py --start=1 --end=2 --experiment_id="my_experiment" --optional_run_id="seeds_1_2"python main.py --start=3 --end=4 --experiment_id="my_experiment" --optional_run_id="seeds_3_4" --COMPUTTE_STATISTICS_OFF python main.py --start=5 --end=6 --experiment_id="my_experiment" --optional_run_id="seeds_5_6" --COMPUTTE_STATISTICS_OFF
     ```
   
 
