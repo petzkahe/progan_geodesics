@@ -88,11 +88,10 @@ CONFIGURATIONS:
   
   For example, if you want to run different start and endpoints for one model, use the commands
   
-    ```
-    $ python main.py --start=1 --end=2 --experiment_id="my_experiment" --optional_run_id="seeds_1_2"python main.py --start=3 --end=4 --experiment_id="my_experiment" --optional_run_id="seeds_3_4" --COMPUTTE_STATISTICS_OFF python main.py --start=5 --end=6 --experiment_id="my_experiment" --optional_run_id="seeds_5_6" --COMPUTTE_STATISTICS_OFF
-    ```
-  
-
+    $ python main.py --start=1 --end=2 --experiment_id="my_experiment" --optional_run_id="seeds_1_2"
+    $ python main.py --start=3 --end=4 --experiment_id="my_experiment" --optional_run_id="seeds_3_4" --COMPUTTE_STATISTICS_OFF 
+    $ python main.py --start=5 --end=6 --experiment_id="my_experiment" --optional_run_id="seeds_5_6" --COMPUTTE_STATISTICS_OFF
+    
 ------------------------------------------
 RESULTS:
 
