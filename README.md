@@ -23,13 +23,11 @@
     $ conda activate progan_geodesics
     ```
 
---------------------------
-USAGE:
+## USAGE:
 
   The code may be used to find geodesics between user-selected points in the latent space, but also allows for calculation of statisics for the discriminator, and creating videos of the GAN outputs along the geodesics.
 
---------------------------
-RUNNING THE CODE:
+## RUNNING THE CODE:
 
   The main file should be run from the repo folder with the command: 
   
@@ -42,8 +40,8 @@ RUNNING THE CODE:
   ```
   $ bash bashScripts/name_of_bash_script
   ```
----------------------------
-CONFIGURATIONS:
+
+## CONFIGURATIONS:
 
   Current default values for configurations can be checked and adjusted in the beginning of the `configs.py` file before `CONFIGURATIONS END`
 
@@ -73,7 +71,7 @@ CONFIGURATIONS:
     
     $ python main.py --methods "method_1" "method_2" "method_3"
     
-  REUSE_OF_DISCRIMINATOR_STATISTICS:     
+  ### REUSE_OF_DISCRIMINATOR_STATISTICS:     
   
   For each experiment_id, running the critic statistics saves the max and min value of the critic.
   If the same experiment_id is used again, the code loads these values in the following run during configuration, so these values are used if no new critic statistics are calculated. 
@@ -88,8 +86,7 @@ CONFIGURATIONS:
     $ python main.py --start=3 --end=4 --experiment_id="my_experiment" --optional_run_id="seeds_3_4" --COMPUTE_STATISTICS_OFF 
     $ python main.py --start=5 --end=6 --experiment_id="my_experiment" --optional_run_id="seeds_5_6" --COMPUTE_STATISTICS_OFF
     
-------------------------------------------
-RESULTS:
+## RESULTS:
 
   Computing critic statistics returns under `results/experiment_id/statistics/` 
     A sample grid of real images with critic values
