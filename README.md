@@ -17,7 +17,6 @@ ENVIRONMENT SETUP:
     ```
     conda env create -f environment.yml
     
-    
   - activate your enviroment by typing 
 
     conda activate progan_geodesics
