@@ -19,7 +19,8 @@ ENVIRONMENT SETUP:
     
   - activate your enviroment by typing 
 
-    ``` conda activate progan_geodesics
+    ``` 
+    conda activate progan_geodesics
 
 --------------------------
 USAGE:
