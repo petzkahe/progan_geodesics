@@ -6,8 +6,7 @@
 
   - Ubunutu 16.04
   - NVIDIA Tesla V100 32 GB GPUs with driver 465.19.01
-  - Cuda Toolkit version 9.0
-  - Tensorflow with GPU version 1.12
+  - Conda local enviroment as per ´environment.yml´ (in essence; Cuda Toolkit version 9.0, and Tensorflow with GPU version 1.12)
 
 ## USAGE:
 
@@ -15,7 +14,7 @@
 
 ## ENVIRONMENT SETUP:
 
-  We have set up a local python environment using conda on a computational machine with specs as above. Conda simplifies the installation of combatible packages, e.g.,  `cudatoolkit` and `tensoflow-gpu`. One may instead replicate the environment (as spec'd in `environment.yml`) in Docker by defining the specified package versions in a Dockerfile. To set up this environment using conda, take these steps:
+  We have set up a local python environment using conda on a computational machine, thus simplifying the installation of combatible packages, e.g.,  `cudatoolkit` and `tensoflow-gpu`. One only needs Nvidia drivers pre-installed. To set up this environment using conda, take these steps:
   
   1) Clone this repository to your machine.
   2) Install conda using `apt-get` or similar. We use version 4.9.2 here.
