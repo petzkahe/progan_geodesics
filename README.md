@@ -6,7 +6,7 @@
 
   - Ubunutu 16.04
   - NVIDIA Tesla V100 32 GB GPUs with driver 465.19.01
-  - Conda local enviroment as per ´environment.yml´ (in essence; Cuda Toolkit version 9.0, and Tensorflow with GPU version 1.12)
+  - Conda local enviroment as per `environment.yml` (in essence; Cuda Toolkit version 9.0, and Tensorflow with GPU version 1.12)
 
 ## USAGE:
 
